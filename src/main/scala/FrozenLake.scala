@@ -1,6 +1,8 @@
 import org.deeplearning4j.gym.StepReply
 import org.deeplearning4j.rl4j.space.DiscreteObservation
 
+import scala.util.Random
+
 /**
   * Created by ben on 6/11/17.
   */
@@ -10,16 +12,18 @@ class FrozenLake {
   private val actions:Range = 0 until 4
   private val terminalStates = List(5, 7, 11, 12, 15)
 
+  private val rng = new Random()
+
   def step(action:Int):StepReply[DiscreteObservation] = {
-    if(actions.contains(action)) {
-      if(action == 1) { //human right
-        state += 1
-      } else if(action == 3) { //human left
-        state -= 1
-      } else if(action == 0) { //human down
-        state += 4
-      } else if(action == 2) { //human up
-        state -= 4
+
+    val drawing = rng.nextDouble()
+    if(drawing < 0.3) {
+      val possibles = FrozenLakeModel.getAllActions(state)
+      val windAction = possibles(rng.nextInt(possibles.length))
+      doAction(windAction)
+    } else {
+      if(actions.contains(action)) {
+        doAction(action)
       }
     }
 
@@ -31,5 +35,17 @@ class FrozenLake {
 
   def getState:Int = {
     state
+  }
+
+  private def doAction(action: Int): Unit = {
+    if(action == 1) { //human right
+      state += 1
+    } else if(action == 3) { //human left
+      state -= 1
+    } else if(action == 0) { //human down
+      state += 4
+    } else if(action == 2) { //human up
+      state -= 4
+    }
   }
 }

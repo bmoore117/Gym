@@ -14,6 +14,7 @@ class QEngine(val learningRate:Double, val gamma:Double, val greedyThreshold:Dou
     if (shouldTakePlannedAction(step)) {
       return getBestActionInternal(state, validActions)
     }
+    println("Exploring")
     getRandomAction(validActions)
   }
 
@@ -40,7 +41,7 @@ class QEngine(val learningRate:Double, val gamma:Double, val greedyThreshold:Dou
   }
 
   private def getRandomAction(validActions:Seq[Int]):Int = {
-    println("Taking random action")
+    //println("Taking random action")
     if(validActions.nonEmpty) {
       validActions(rng.nextInt(validActions.length))
     } else {

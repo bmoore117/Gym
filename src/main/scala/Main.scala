@@ -8,7 +8,7 @@ object Main {
 
   def main(args:Array[String]): Unit = {
 
-    val qEngine = new QEngine(0.8, 0.95, 0.9)
+    val qEngine = new RouteMaster//new QEngine(0.8, 0.95, 0.9)
 
     //val client = ClientFactory.build[DiscreteObservation, Integer, DiscreteSpace]("FrozenLake-v0", true)
 
@@ -25,10 +25,10 @@ object Main {
 
       var shouldContinue = true
       while (shouldContinue) {
-        val action = qEngine.getBestAction(state, episode)
+        val action = qEngine.getAction(state)
         val reply = client.step(action)
 
-        qEngine.updateQMatrix(state, action, reply.getReward, reply.getObservation.getState)
+        //qEngine.updateQMatrix(state, action, reply.getReward, reply.getObservation.getState)
         state = reply.getObservation.getState
         //println(state)
 
