@@ -9,11 +9,9 @@ class QEngine(val learningRate:Double, val gamma:Double, val greedyThreshold:Dou
 
   private val rng = new scala.util.Random(123)
 
-  private var stepCount:Int = 0
-
-  def getBestAction(state:Int): Int = {
+  def getBestAction(state:Int, step:Int): Int = {
     val validActions = FrozenLakeModel.getValidActions(state)
-    if (shouldTakePlannedAction()) {
+    if (shouldTakePlannedAction(step)) {
       return getBestActionInternal(state, validActions)
     }
     getRandomAction(validActions)
@@ -29,11 +27,11 @@ class QEngine(val learningRate:Double, val gamma:Double, val greedyThreshold:Dou
         var bestPair = (0, Double.MinValue)
 
         remainingActions.foreach(pair => {
-          if (pair._2 > bestPair._2) {
+          if (pair._2 > bestPair._2) { //_2 is reward
             bestPair = pair
           }
         })
-        return bestPair._1 //return best thing
+        return bestPair._1 //return action with highest reward
       }
     }
 
@@ -42,6 +40,7 @@ class QEngine(val learningRate:Double, val gamma:Double, val greedyThreshold:Dou
   }
 
   private def getRandomAction(validActions:Seq[Int]):Int = {
+    println("Taking random action")
     if(validActions.nonEmpty) {
       validActions(rng.nextInt(validActions.length))
     } else {
@@ -49,14 +48,10 @@ class QEngine(val learningRate:Double, val gamma:Double, val greedyThreshold:Dou
     }
   }
 
-  def shouldTakePlannedAction():Boolean = {
+  private def shouldTakePlannedAction(step:Int):Boolean = {
     val drawing = rng.nextDouble()
 
-    drawing < greedyThreshold * (stepCount/1000)
-  }
-
-  def incrementStepCount():Unit = {
-    stepCount += 1
+    drawing < greedyThreshold * (step/1000)
   }
 
   def updateQMatrix(state:Int, action:Int, reward:Double, newState:Int): Unit = {

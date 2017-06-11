@@ -6,9 +6,15 @@ object FrozenLakeModel {
   def getValidActions(state:Int):List[Int] = {
 
     //3 is up, 2 is right, 1 is down, 0 is left
+    //Additionally it's offset. What looks down on the screen is left
+    //So for human convenience 0 is down, 2 is up, 3 is left, 1 is right
+    //human left: 3
+    //human right: 1
+    //human down: 0
+    //human up: 2
     state match {
       case 0 => List(0, 1)
-      case 1 => List(0, 3)
+      case 1 => List(1, 3)
       case 2 => List(0, 1, 3)
       case 3 => List(3)
       case 4 => List(0, 2)
